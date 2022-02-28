@@ -147,10 +147,12 @@
 			{/each}
 		</div>
 	{/each}
-	<span>
-		<input/>
-		<button on:click={() => check_word()}>Check</button>
-	</span>
+	{#if !stop}
+		<span>
+			<input/>
+			<button on:click={() => check_word()}>Check</button>
+		</span>
+	{/if}
 	<div id="stats">
 		<span>Completed in 1 try &nbsp;&nbsp;&nbsp;<progress id="stats-1" value={save_data[1].toString()} max={max_progess} /></span>
 		<span>Completed in 2 tries <progress id="stats-2" value={save_data[2].toString()} max={max_progess} /></span>
