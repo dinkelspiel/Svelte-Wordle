@@ -148,7 +148,7 @@
 		</div>
 	{/each}
 	<span>
-		<input bind:value={current} />
+		<input/>
 		<button on:click={() => check_word()}>Check</button>
 	</span>
 	<div id="stats">
