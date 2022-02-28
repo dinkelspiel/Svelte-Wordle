@@ -490,6 +490,7 @@
 	let current = "";
 
 	let letters = [0, 1, 2, 3, 4]
+	let rows = [0, 1, 2, 3, 4, 5]
 
 	let startDate = "2022-01-01";
 	let date1 = new Date();
@@ -510,6 +511,7 @@
 		"3": "0",
 		"4": "0",
 		"5": "0",
+		"6": "0",
 		"last_played": "",
 		"last_played_words": [],
 		"last_played_guesses": ""
@@ -570,7 +572,7 @@
 </script>
 
 <main>
-	{#each letters as row}
+	{#each rows as row}
 		<div class="wordle">
 			{#each letters as i}
 				<div id="square_big">
@@ -590,11 +592,12 @@
 		</div>
 	{/each}
 	<div id="stats">
-		<span>Completed in 1 try <progress id="stats-1" value={save_data[1].toString()} max={max_progess} /></span>
-		<span>Completed in 2 try <progress id="stats-2" value={save_data[2].toString()} max={max_progess} /></span>
-		<span>Completed in 3 try <progress id="stats-3" value={save_data[3].toString()} max={max_progess} /></span>
-		<span>Completed in 4 try <progress id="stats-4" value={save_data[4].toString()} max={max_progess} /></span>
-		<span>Completed in 5 try <progress id="stats-5" value={save_data[5].toString()} max={max_progess} /></span>
+		<span>Completed in 1 try &nbsp;&nbsp;&nbsp;<progress id="stats-1" value={save_data[1].toString()} max={max_progess} /></span>
+		<span>Completed in 2 tries <progress id="stats-2" value={save_data[2].toString()} max={max_progess} /></span>
+		<span>Completed in 3 tries <progress id="stats-3" value={save_data[3].toString()} max={max_progess} /></span>
+		<span>Completed in 4 tries <progress id="stats-4" value={save_data[4].toString()} max={max_progess} /></span>
+		<span>Completed in 5 tries <progress id="stats-5" value={save_data[5].toString()} max={max_progess} /></span>
+		<span>Completed in 6 tries <progress id="stats-6" value={save_data[6].toString()} max={max_progess} /></span>
 	</div>
 	<button on:click={() => {
 		localStorage.removeItem('stats')
