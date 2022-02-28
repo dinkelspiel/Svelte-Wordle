@@ -502,6 +502,31 @@
 	let current_guess = 0;
 
 	let stop = false;
+	let wrong = false;
+
+	let save_data = JSON.parse(localStorage.getItem('stats')) == null ? {
+		"1": "0",
+		"2": "0",
+		"3": "0",
+		"4": "0",
+		"5": "0",
+		"last_played": "",
+		"last_played_words": [],
+		"last_played_guesses": ""
+	} : JSON.parse(localStorage.getItem('stats'));
+
+	let max_progess = (parseInt(save_data["1"]) + parseInt(save_data["2"]) + parseInt(save_data["3"]) + parseInt(save_data["4"]) + parseInt(save_data["5"])).toString()
+
+	if(save_data["last_played"] == new Date().toDateString()) {
+		current_guesses = save_data["last_played_words"];
+		current_guess = save_data["last_played_guesses"];
+		stop = true;
+	}
+
+	let counter = 0;
+	const interval = setInterval(() => {!wrong ? counter = 0 : counter > 60 ? wrong = false : counter ++}, 1);
+
+	// console.log(save_data)
 
 	document.onkeypress = function (event) {
 		if(stop)
@@ -524,12 +549,20 @@
 			current = current.slice(0, -1);
 		} else if(key == 13) {
 			if(current.length == 5 && word_list.includes(current)) {
-				if(current == word)
-					stop = true;
 				current_guesses[current_guess] = current;
+				current_guess ++;
+				if(current == word) {
+					stop = true;
+					save_data["last_played"] = new Date().toDateString();
+					save_data["last_played_words"] = current_guesses;
+					save_data["last_played_guesses"] = current_guess.toString();
+					save_data[current_guess.toString()] = (parseInt(save_data[current_guess.toString()]) + 1).toString();
+					localStorage.setItem('stats', JSON.stringify(save_data));
+				}
 				current = "";
 				current = current.slice(0, -1);
-				current_guess ++;
+			} else if(!word_list.includes(current)) {
+				wrong = true;
 			}
 		}
 	};
@@ -540,13 +573,15 @@
 	{#each letters as row}
 		<div class="wordle">
 			{#each letters as i}
-				<div id="square">
+				<div id="square_big">
 					{#if current_guess == row}
 						{#if i < current.length}
-							{current.split("")[i].toUpperCase()}
+							<div id="square" style={wrong ? "background-color: red;" : ""}>
+								{current.split("")[i].toUpperCase()}
+							</div>
 						{/if}
 					{:else if row < current_guess}
-						<div style={word[i] == current_guesses[row][i] ? "background-color: green;" : word.includes(current_guesses[row][i]) ? "background-color: yellow;" : ""}>
+						<div id="square" style={word[i] == current_guesses[row][i] ? "background-color: green;" : word.includes(current_guesses[row][i]) ? "background-color: yellow;" : ""}>
 							{current_guesses[row][i].toUpperCase()}
 						</div>
 					{/if}
@@ -554,19 +589,42 @@
 			{/each}
 		</div>
 	{/each}
+	<div id="stats">
+		<span>Completed in 1 try <progress id="stats-1" value={save_data[1].toString()} max={max_progess} /></span>
+		<span>Completed in 2 try <progress id="stats-2" value={save_data[2].toString()} max={max_progess} /></span>
+		<span>Completed in 3 try <progress id="stats-3" value={save_data[3].toString()} max={max_progess} /></span>
+		<span>Completed in 4 try <progress id="stats-4" value={save_data[4].toString()} max={max_progess} /></span>
+		<span>Completed in 5 try <progress id="stats-5" value={save_data[5].toString()} max={max_progess} /></span>
+	</div>
+	<button on:click={() => {
+		localStorage.removeItem('stats')
+	}}>
+		Clear savedata
+	</button>
 </main>
 
 <style>
 	main {
-		text-align: center;
 		padding: 1em;
-		margin: 0 auto;
+		display: grid;
+		place-items: center;
 	}
 
 	.wordle {
 		display: flex;
 		gap: 5px;
 		margin-bottom: 5px;
+	}
+
+	#square_big {
+		display:grid;
+		height: 60px;
+		width: 60px;
+		background-color: gray;
+		text-align: center;
+		align-content: center;
+		font-size: 40px;
+		padding: 0px;
 	}
 
 	#square {
@@ -578,5 +636,12 @@
 		align-content: center;
 		font-size: 40px;
 		padding: 0px;
+	}
+
+	#stats {
+		display: flex;
+		flex-direction: column;
+		margin-top: 25px;
+		margin-bottom: 25px;;
 	}
 </style>
