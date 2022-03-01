@@ -109,6 +109,7 @@
 				save_data["last_played_guesses"] = current_guess.toString();
 				save_data[current_guess.toString()] = (parseInt(save_data[current_guess.toString()]) + 1).toString();
 				localStorage.setItem('stats', JSON.stringify(save_data));
+				max_progess = (parseInt(save_data["1"]) + parseInt(save_data["2"]) + parseInt(save_data["3"]) + parseInt(save_data["4"]) + parseInt(save_data["5"])).toString()
 			}
 			current = "";
 			current = current.slice(0, -1);
